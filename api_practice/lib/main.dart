@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 void main() {
   runApp(MaterialApp(
@@ -14,16 +15,16 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-  String stringresponse;
+  List listresponse;
 
   Future fetchdata() async {
     http.Response response;
     response = await http.get(
-        'https://www.thegrowingdeveloper.org/apiview?id=1'); // send http request to the server using http.get()method
+        'https://www.thegrowingdeveloper.org/apiview?id=4'); // send http request to the server using http.get()method
 
     if (response.statusCode == 200) {
       setState(() {
-        stringresponse = response.body;
+        listresponse = jsonDecode(response.body);
       });
     }
   }
@@ -44,12 +45,14 @@ class _HomepageState extends State<Homepage> {
         ),
         backgroundColor: Colors.blue[900],
       ),
-      body: Text(
-        stringresponse.toString(),
-        style: TextStyle(
-          fontSize: 26.0,
-        ),
-      ),
+      body: listresponse == null
+          ? Container()
+          : Text(
+              listresponse[2].toString(),
+              style: TextStyle(
+                fontSize: 26.0,
+              ),
+            ),
     );
   }
 }
