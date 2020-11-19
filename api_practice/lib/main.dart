@@ -47,7 +47,7 @@ class _HomepageState extends State<Homepage> {
       body: Text(
         stringresponse.toString(),
         style: TextStyle(
-          fontSize: 25.0,
+          fontSize: 26.0,
         ),
       ),
     );
