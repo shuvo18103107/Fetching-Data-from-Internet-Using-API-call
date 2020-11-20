@@ -15,24 +15,26 @@ class Homepage extends StatefulWidget {
 }
 
 class _HomepageState extends State<Homepage> {
-  List listresponse;
+  Map mapresponse;
+  List listoffacts;
 
   Future fetchdata() async {
     http.Response response;
     response = await http.get(
-        'https://www.thegrowingdeveloper.org/apiview?id=4'); // send http request to the server using http.get()method
+        'https://www.thegrowingdeveloper.org/apiview?id=2'); // send http request to the server using http.get()method
 
     if (response.statusCode == 200) {
       setState(() {
-        listresponse = jsonDecode(response.body);
+        mapresponse = jsonDecode(response.body);
+        listoffacts = mapresponse['facts'];
       });
     }
   }
 
   @override
   void initState() {
-    fetchdata();
     super.initState();
+    fetchdata();
   }
 
   @override
@@ -45,12 +47,46 @@ class _HomepageState extends State<Homepage> {
         ),
         backgroundColor: Colors.blue[900],
       ),
-      body: listresponse == null
+      body: mapresponse == null
           ? Container()
-          : Text(
-              listresponse[2].toString(),
-              style: TextStyle(
-                fontSize: 26.0,
+          : SingleChildScrollView(
+              child: Column(
+                children: [
+                  Text(
+                    mapresponse['category'],
+                    style: TextStyle(
+                      fontSize: 25.0,
+                    ),
+                  ),
+                  ListView.builder(
+                    shrinkWrap: true,
+                    physics: NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return Container(
+                        margin: EdgeInsets.all(10.0),
+                        child: Column(
+                          children: [
+                            Image.network(listoffacts[index]['image_url']),
+                            Text(
+                              listoffacts[index]['title'].toString(),
+                              style: TextStyle(
+                                fontSize: 20.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              listoffacts[index]['description'].toString(),
+                              style: TextStyle(
+                                fontSize: 18.0,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                    itemCount: listoffacts == null ? 0 : listoffacts.length,
+                  )
+                ],
               ),
             ),
     );
